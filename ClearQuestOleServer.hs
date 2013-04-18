@@ -6,17 +6,22 @@ module ClearQuestOleServer where
 
 import Prelude (fromEnum, toEnum)
 import qualified Prelude
-import qualified Automation (IDispatch, outIDispatch, propertyGet, 
-                             inIDispatch, propertySet, outBool, function1, outVariant, 
-                             inString, method0, inInt32, outString, Variant, inVariant, 
-                             outInt32, method3, inBool, VARIANT, inInt16, outIUnknown, 
-                             inIUnknown, outInt16, method6)
-import qualified Com (LIBID, mkLIBID, IID, mkIID, CLSID, mkCLSID, 
-                      IUnknown)
-import qualified ComServ (ComVTable)
-import qualified Int (Int32, Int16)
-import qualified StdDispatch (createStdDispatchVTBL2, 
-                              mkDispMethod, apply_1, retVal, inArg, apply_0)
+--import qualified System.Win32.Com.Automation (IDispatch, outIDispatch, propertyGet, 
+                             --inIDispatch, propertySet, outBool, function1, outVariant, 
+                             --inString, method0, inInt32, outString, Variant, inVariant, 
+                             --outInt32, method3, inBool, VARIANT, inInt16, outIUnknown, 
+                             --inIUnknown, outInt16, method6) as Automation
+import qualified System.Win32.Com.Automation as Automation
+--import qualified System.Win32.Com (LIBID, mkLIBID, IID, mkIID, CLSID, mkCLSID, 
+                      --IUnknown) as Com
+import qualified System.Win32.Com as Com
+--import qualified System.Win32.Com.Server (ComVTable) as Server
+import qualified System.Win32.Com.Server as ComServ
+--import qualified Data.Int (Int32, Int16)
+import qualified Data.Int as Int
+--import qualified System.Win32.Com.Server.StdDispatch (createStdDispatchVTBL2, 
+                              --mkDispMethod, apply_1, retVal, inArg, apply_0)
+import qualified System.Win32.Com.Server.StdDispatch as StdDispatch
 
 libidClearQuestOleServer :: Com.LIBID
 libidClearQuestOleServer =
@@ -53,35 +58,40 @@ isMetadataReadonly =
                        []
                        Automation.outBool
 
-getAuxEntityDefNames :: IOAdSession a0
+getAuxEntityDefNames :: (Automation.Variant a1)
+                     => IOAdSession a0
                      -> Prelude.IO a1
 getAuxEntityDefNames =
   Automation.function1 "GetAuxEntityDefNames"
                        []
                        Automation.outVariant
 
-getReqEntityDefNames :: IOAdSession a0
+getReqEntityDefNames :: (Automation.Variant a1)
+                     => IOAdSession a0
                      -> Prelude.IO a1
 getReqEntityDefNames =
   Automation.function1 "GetReqEntityDefNames"
                        []
                        Automation.outVariant
 
-getEntityDefNames :: IOAdSession a0
+getEntityDefNames :: (Automation.Variant a1)
+                     => IOAdSession a0
                   -> Prelude.IO a1
 getEntityDefNames =
   Automation.function1 "GetEntityDefNames"
                        []
                        Automation.outVariant
 
-getSubmitEntityDefNames :: IOAdSession a0
+getSubmitEntityDefNames :: (Automation.Variant a1)
+                     => IOAdSession a0
                         -> Prelude.IO a1
 getSubmitEntityDefNames =
   Automation.function1 "GetSubmitEntityDefNames"
                        []
                        Automation.outVariant
 
-getQueryEntityDefNames :: IOAdSession a0
+getQueryEntityDefNames :: (Automation.Variant a1)
+                     => IOAdSession a0
                        -> Prelude.IO a1
 getQueryEntityDefNames =
   Automation.function1 "GetQueryEntityDefNames"
@@ -90,11 +100,12 @@ getQueryEntityDefNames =
 
 buildEntity :: Prelude.String
             -> IOAdSession a0
-            -> Prelude.IO (Automation.IDispatch ())
+            -> Prelude.IO (IOAdEntity ()) --Automation.IDispatch ())
 buildEntity entity_def_name =
   Automation.function1 "BuildEntity"
                        [Automation.inString entity_def_name]
-                       Automation.outIDispatch
+                       --Automation.outIDispatch
+                       Automation.outIUnknown
 
 editEntity :: Automation.IDispatch a1
            -> Prelude.String
@@ -108,11 +119,12 @@ editEntity entity edit_action_name =
 
 buildResultSet :: Automation.IDispatch a1
                -> IOAdSession a0
-               -> Prelude.IO (Automation.IDispatch ())
+               -- -> Prelude.IO (Automation.IDispatch ())
+               -> Prelude.IO (IOAdResultSet ()) --Automation.IDispatch ())
 buildResultSet query_def =
   Automation.function1 "BuildResultSet"
                        [Automation.inIDispatch query_def]
-                       Automation.outIDispatch
+                       Automation.outIUnknown --outIDispatch
 
 openQueryDef :: Prelude.String
              -> IOAdSession a0
@@ -125,13 +137,14 @@ openQueryDef filename =
 getEntity :: Prelude.String
           -> Prelude.String
           -> IOAdSession a0
-          -> Prelude.IO (Automation.IDispatch ())
+          -> Prelude.IO (IOAdEntity ())
 getEntity entity_def_name display_name =
   Automation.function1 "GetEntity"
                        [ Automation.inString entity_def_name
                        , Automation.inString display_name
                        ]
-                       Automation.outIDispatch
+                       --Automation.outIDispatch
+                       Automation.outIUnknown
 
 getEntityByDbId :: Prelude.String
                 -> Int.Int32
@@ -253,25 +266,30 @@ getUserMiscInfo =
                        []
                        Automation.outString
 
-getUserGroups :: IOAdSession a0
+getUserGroups :: (Automation.Variant a1)
+                     => IOAdSession a0
               -> Prelude.IO a1
 getUserGroups =
   Automation.function1 "GetUserGroups"
                        []
                        Automation.outVariant
 
-getAccessibleDatabases :: Prelude.String
+getAccessibleDatabases :: -- (Automation.Variant a1)
+                       -- => Prelude.String
+                          Prelude.String
                        -> Prelude.String
                        -> Prelude.String
                        -> IOAdSession a0
-                       -> Prelude.IO a1
+                       -- -> Prelude.IO a1
+                       -> Prelude.IO (IOAdDatabases ())
 getAccessibleDatabases master_db_name user_login_name db_set_name =
   Automation.function1 "GetAccessibleDatabases"
                        [ Automation.inString master_db_name
                        , Automation.inString user_login_name
                        , Automation.inString db_set_name
                        ]
-                       Automation.outVariant
+                       Automation.outIUnknown
+                       --Automation.outVariant
 
 buildSQLQuery :: Prelude.String
               -> IOAdSession a0
@@ -283,11 +301,12 @@ buildSQLQuery sql_string =
 
 buildQuery :: Prelude.String
            -> IOAdSession a0
-           -> Prelude.IO (Automation.IDispatch ())
+           -> Prelude.IO (IOAdQueryDef ()) --Automation.IDispatch ())
 buildQuery primary_entitydef_name =
   Automation.function1 "BuildQuery"
                        [Automation.inString primary_entitydef_name]
-                       Automation.outIDispatch
+                       -- Automation.outIDispatch
+                       Automation.outIUnknown
 
 getSessionDatabase :: IOAdSession a0
                    -> Prelude.IO (Automation.IDispatch ())
@@ -322,14 +341,16 @@ hasValue name =
                        [Automation.inString name]
                        Automation.outBool
 
-getListDefNames :: IOAdSession a0
+getListDefNames :: (Automation.Variant a1)
+                     => IOAdSession a0
                 -> Prelude.IO a1
 getListDefNames =
   Automation.function1 "GetListDefNames"
                        []
                        Automation.outVariant
 
-getListMembers :: Prelude.String
+getListMembers :: (Automation.Variant a1)
+                     => Prelude.String
                -> IOAdSession a0
                -> Prelude.IO a1
 getListMembers listName =
@@ -337,7 +358,8 @@ getListMembers listName =
                        [Automation.inString listName]
                        Automation.outVariant
 
-setListMembers :: Prelude.String
+setListMembers :: (Automation.Variant a1)
+                     => Prelude.String
                -> a1
                -> IOAdSession a0
                -> Prelude.IO ()
@@ -385,7 +407,8 @@ deleteEntity entity deleteActionName =
                        ]
                        Automation.outString
 
-getNameValue :: Prelude.String
+getNameValue :: (Automation.Variant a1)
+                     => Prelude.String
              -> IOAdSession a0
              -> Prelude.IO a1
 getNameValue name =
@@ -393,7 +416,8 @@ getNameValue name =
                          [Automation.inString name]
                          Automation.outVariant
 
-setNameValue :: Prelude.String
+setNameValue :: (Automation.Variant a1)
+                     => Prelude.String
              -> a1
              -> IOAdSession a0
              -> Prelude.IO ()
@@ -435,7 +459,8 @@ registerSchemaRepoFromFile filePath =
                        [Automation.inString filePath]
                        Automation.outString
 
-getEntityDefFamilyNames :: IOAdSession a0
+getEntityDefFamilyNames :: (Automation.Variant a1)
+                     => IOAdSession a0
                         -> Prelude.IO a1
 getEntityDefFamilyNames =
   Automation.function1 "GetEntityDefFamilyNames"
@@ -458,7 +483,8 @@ getEntityDefOrFamily familyName =
                        [Automation.inString familyName]
                        Automation.outIDispatch
 
-getQueryEntityDefFamilyNames :: IOAdSession a0
+getQueryEntityDefFamilyNames :: (Automation.Variant a1)
+                     => IOAdSession a0
                              -> Prelude.IO a1
 getQueryEntityDefFamilyNames =
   Automation.function1 "GetQueryEntityDefFamilyNames"
@@ -578,7 +604,8 @@ getLocalReplica =
                        []
                        Automation.outIDispatch
 
-getSiteExtendedNames :: Prelude.String
+getSiteExtendedNames :: (Automation.Variant a1)
+                     => Prelude.String
                      -> Prelude.String
                      -> IOAdSession a0
                      -> Prelude.IO a1
@@ -627,7 +654,8 @@ getSiteExtension name =
                        [Automation.inString name]
                        Automation.outInt32
 
-getDisplayNamesNeedingSiteExtension :: Prelude.String
+getDisplayNamesNeedingSiteExtension :: (Automation.Variant a1)
+                     => Prelude.String
                                     -> IOAdSession a0
                                     -> Prelude.IO a1
 getDisplayNamesNeedingSiteExtension edefname =
@@ -850,7 +878,8 @@ canSubmit entDefName =
                        [Automation.inString entDefName]
                        Automation.outBool
 
-getEntityDefNamesForSubmit :: IOAdSession a0
+getEntityDefNamesForSubmit :: (Automation.Variant a1)
+                     => IOAdSession a0
                            -> Prelude.IO a1
 getEntityDefNamesForSubmit =
   Automation.function1 "GetEntityDefNamesForSubmit"
@@ -1002,7 +1031,8 @@ getSuiteBuildId =
                        []
                        Automation.outString
 
-getEntityDefOfName :: Prelude.String
+getEntityDefOfName :: (Automation.Variant a1)
+                     => Prelude.String
                    -> a1
                    -> Int.Int32
                    -> IOAdSession a0
@@ -1015,7 +1045,8 @@ getEntityDefOfName displayName entDefNames entityDefType =
                        ]
                        Automation.outIDispatch
 
-getEntityDefOfDbId :: Prelude.String
+getEntityDefOfDbId :: (Automation.Variant a1)
+                     => Prelude.String
                    -> a1
                    -> Int.Int32
                    -> IOAdSession a0
@@ -1049,7 +1080,8 @@ getEveryoneGroupName =
                        []
                        Automation.outString
 
-getAllGroups :: Int.Int32
+getAllGroups :: (Automation.Variant a1)
+                     => Int.Int32
              -> IOAdSession a0
              -> Prelude.IO a1
 getAllGroups extend_option =
@@ -1057,7 +1089,8 @@ getAllGroups extend_option =
                        [Automation.inInt32 extend_option]
                        Automation.outVariant
 
-getAllUsers :: Int.Int32
+getAllUsers :: (Automation.Variant a1)
+                     => Int.Int32
             -> IOAdSession a0
             -> Prelude.IO a1
 getAllUsers extend_option =
@@ -1191,7 +1224,8 @@ getEntityDefName =
                        []
                        Automation.outString
 
-getFieldNames :: IOAdEntity a0
+getFieldNames :: (Automation.Variant a1)
+                     => IOAdEntity a0
               -> Prelude.IO a1
 getFieldNames =
   Automation.function1 "GetFieldNames"
@@ -1227,7 +1261,8 @@ getFieldRequiredness fieldname =
                        [Automation.inString fieldname]
                        Automation.outInt32
 
-setFieldValue :: Prelude.String
+setFieldValue :: (Automation.Variant a1)
+                     => Prelude.String
               -> a1
               -> IOAdEntity a0
               -> Prelude.IO Prelude.String
@@ -1238,7 +1273,8 @@ setFieldValue fieldname new_value =
                        ]
                        Automation.outString
 
-getFieldChoiceList :: Prelude.String
+getFieldChoiceList :: (Automation.Variant a1)
+                     => Prelude.String
                    -> IOAdEntity a0
                    -> Prelude.IO a1
 getFieldChoiceList fieldname =
@@ -1295,7 +1331,8 @@ getOriginalId =
                        []
                        Automation.outString
 
-getLegalActionDefNames :: IOAdEntity a0
+getLegalActionDefNames :: (Automation.Variant a1)
+                     => IOAdEntity a0
                        -> Prelude.IO a1
 getLegalActionDefNames =
   Automation.function1 "GetLegalActionDefNames"
@@ -1331,14 +1368,16 @@ isOriginal =
                        []
                        Automation.outBool
 
-getDuplicates :: IOAdEntity a0
+getDuplicates :: (Automation.Variant a1)
+                     => IOAdEntity a0
               -> Prelude.IO a1
 getDuplicates =
   Automation.function1 "GetDuplicates"
                        []
                        Automation.outVariant
 
-getAllDuplicates :: IOAdEntity a0
+getAllDuplicates :: (Automation.Variant a1)
+                     => IOAdEntity a0
                  -> Prelude.IO a1
 getAllDuplicates =
   Automation.function1 "GetAllDuplicates"
@@ -1359,7 +1398,8 @@ validate =
                        []
                        Automation.outString
 
-addFieldValue :: Prelude.String
+addFieldValue :: (Automation.Variant a1)
+                     => Prelude.String
               -> a1
               -> IOAdEntity a0
               -> Prelude.IO Prelude.String
@@ -1370,7 +1410,8 @@ addFieldValue fieldname new_value =
                        ]
                        Automation.outString
 
-deleteFieldValue :: Prelude.String
+deleteFieldValue :: (Automation.Variant a1)
+                     => Prelude.String
                  -> a1
                  -> IOAdEntity a0
                  -> Prelude.IO Prelude.String
@@ -1383,11 +1424,12 @@ deleteFieldValue fieldname new_value =
 
 getFieldValue :: Prelude.String
               -> IOAdEntity a0
-              -> Prelude.IO (Automation.IDispatch ())
+              -> Prelude.IO (IOAdFieldInfo ())
 getFieldValue fieldname =
   Automation.function1 "GetFieldValue"
                        [Automation.inString fieldname]
-                       Automation.outIDispatch
+                       --Automation.outIDispatch
+                       Automation.outIUnknown
 
 getFieldOriginalValue :: Prelude.String
                       -> IOAdEntity a0
@@ -1397,35 +1439,40 @@ getFieldOriginalValue fieldname =
                        [Automation.inString fieldname]
                        Automation.outIDispatch
 
-getAllFieldValues :: IOAdEntity a0
+getAllFieldValues :: (Automation.Variant a1)
+                     => IOAdEntity a0
                   -> Prelude.IO a1
 getAllFieldValues =
   Automation.function1 "GetAllFieldValues"
                        []
                        Automation.outVariant
 
-getInvalidFieldValues :: IOAdEntity a0
+getInvalidFieldValues :: (Automation.Variant a1)
+                     => IOAdEntity a0
                       -> Prelude.IO a1
 getInvalidFieldValues =
   Automation.function1 "GetInvalidFieldValues"
                        []
                        Automation.outVariant
 
-getFieldsUpdatedThisSetValue :: IOAdEntity a0
+getFieldsUpdatedThisSetValue :: (Automation.Variant a1)
+                     => IOAdEntity a0
                              -> Prelude.IO a1
 getFieldsUpdatedThisSetValue =
   Automation.function1 "GetFieldsUpdatedThisSetValue"
                        []
                        Automation.outVariant
 
-getFieldsUpdatedThisGroup :: IOAdEntity a0
+getFieldsUpdatedThisGroup :: (Automation.Variant a1)
+                     => IOAdEntity a0
                           -> Prelude.IO a1
 getFieldsUpdatedThisGroup =
   Automation.function1 "GetFieldsUpdatedThisGroup"
                        []
                        Automation.outVariant
 
-getFieldsUpdatedThisAction :: IOAdEntity a0
+getFieldsUpdatedThisAction :: (Automation.Variant a1)
+                     => IOAdEntity a0
                            -> Prelude.IO a1
 getFieldsUpdatedThisAction =
   Automation.function1 "GetFieldsUpdatedThisAction"
@@ -1445,7 +1492,8 @@ getHistoryFieldValue =
                        []
                        Automation.outIDispatch
 
-getHistoryDisplayNameHeader :: IOAdEntity a0
+getHistoryDisplayNameHeader :: (Automation.Variant a1)
+                     => IOAdEntity a0
                             -> Prelude.IO a1
 getHistoryDisplayNameHeader =
   Automation.function1 "GetHistoryDisplayNameHeader"
@@ -1502,7 +1550,8 @@ loadAttachment attachment_fieldname element_displayname destination_filename =
                        ]
                        Automation.outInt32
 
-getAttachmentDisplayNameHeader :: Prelude.String
+getAttachmentDisplayNameHeader :: (Automation.Variant a1)
+                     => Prelude.String
                                -> IOAdEntity a0
                                -> Prelude.IO a1
 getAttachmentDisplayNameHeader attachment_fieldname =
@@ -1518,7 +1567,8 @@ getFieldChoiceType fieldname =
                        [Automation.inString fieldname]
                        Automation.outInt32
 
-fireNamedHook :: Prelude.String
+fireNamedHook :: (Automation.Variant a1)
+                     => Prelude.String
               -> a1
               -> IOAdEntity a0
               -> Prelude.IO Prelude.String
@@ -1576,7 +1626,8 @@ getFieldReferencedEntityDefName fieldname =
                        [Automation.inString fieldname]
                        Automation.outString
 
-setFieldChoiceList :: Prelude.String
+setFieldChoiceList :: (Automation.Variant a1)
+                     => Prelude.String
                    -> a1
                    -> IOAdEntity a0
                    -> Prelude.IO ()
@@ -1635,7 +1686,8 @@ getFieldStringValue fieldname =
                        [Automation.inString fieldname]
                        Automation.outString
 
-getFieldStringValueAsList :: Prelude.String
+getFieldStringValueAsList :: (Automation.Variant a1)
+                     => Prelude.String
                           -> IOAdEntity a0
                           -> Prelude.IO a1
 getFieldStringValueAsList fieldname =
@@ -1643,7 +1695,8 @@ getFieldStringValueAsList fieldname =
                        [Automation.inString fieldname]
                        Automation.outVariant
 
-setFieldValues :: a2
+setFieldValues :: (Automation.Variant a1, Automation.Variant a2, Automation.Variant a3)
+                     => a2
                -> a3
                -> IOAdEntity a0
                -> Prelude.IO a1
@@ -1654,7 +1707,8 @@ setFieldValues varfieldNames varvalues =
                        ]
                        Automation.outVariant
 
-getFieldStringValues :: a2
+getFieldStringValues :: (Automation.Variant a1,Automation.Variant a2)
+                     => a2
                      -> IOAdEntity a0
                      -> Prelude.IO a1
 getFieldStringValues varfieldNames =
@@ -1662,21 +1716,24 @@ getFieldStringValues varfieldNames =
                        [Automation.inVariant varfieldNames]
                        Automation.outVariant
 
-getFieldsUpdatedThisEntireAction :: IOAdEntity a0
+getFieldsUpdatedThisEntireAction :: (Automation.Variant a1)
+                     => IOAdEntity a0
                                  -> Prelude.IO a1
 getFieldsUpdatedThisEntireAction =
   Automation.function1 "GetFieldsUpdatedThisEntireAction"
                        []
                        Automation.outVariant
 
-getLegalAccessibleActionDefNames :: IOAdEntity a0
+getLegalAccessibleActionDefNames :: (Automation.Variant a1)
+                     => IOAdEntity a0
                                  -> Prelude.IO a1
 getLegalAccessibleActionDefNames =
   Automation.function1 "GetLegalAccessibleActionDefNames"
                        []
                        Automation.outVariant
 
-setFieldValueWithoutValidatingFields :: Prelude.String
+setFieldValueWithoutValidatingFields :: (Automation.Variant a1)
+                     => Prelude.String
                                      -> a1
                                      -> IOAdEntity a0
                                      -> Prelude.IO Prelude.String
@@ -1687,7 +1744,8 @@ setFieldValueWithoutValidatingFields fieldname new_value =
                        ]
                        Automation.outString
 
-addFieldValueWithoutValidatingFields :: Prelude.String
+addFieldValueWithoutValidatingFields :: (Automation.Variant a1)
+                     => Prelude.String
                                      -> a1
                                      -> IOAdEntity a0
                                      -> Prelude.IO Prelude.String
@@ -1698,7 +1756,8 @@ addFieldValueWithoutValidatingFields fieldname new_value =
                        ]
                        Automation.outString
 
-addFieldValues :: Prelude.String
+addFieldValues :: (Automation.Variant a1)
+                     => Prelude.String
                -> a1
                -> Prelude.Bool
                -> IOAdEntity a0
@@ -1711,7 +1770,8 @@ addFieldValues fieldname new_values bDoValidation =
                        ]
                        Automation.outString
 
-deleteFieldValues :: Prelude.String
+deleteFieldValues :: (Automation.Variant a1)
+                     => Prelude.String
                   -> a1
                   -> Prelude.Bool
                   -> IOAdEntity a0
@@ -1744,7 +1804,8 @@ getLockOwner =
                        []
                        Automation.outString
 
-getDisplayNameAsList :: IOAdEntity a0
+getDisplayNameAsList :: (Automation.Variant a1)
+                     => IOAdEntity a0
                      -> Prelude.IO a1
 getDisplayNameAsList =
   Automation.function1 "GetDisplayNameAsList"
@@ -2010,11 +2071,12 @@ buildField field_path =
 
 buildFilterOperator :: Int.Int32
                     -> IOAdQueryDef a0
-                    -> Prelude.IO (Automation.IDispatch ())
+                    -- -> Prelude.IO (Automation.IDispatch ())
+                    -> Prelude.IO (IOAdQueryFilterNode ())
 buildFilterOperator bool_op =
   Automation.function1 "BuildFilterOperator"
                        [Automation.inInt32 bool_op]
-                       Automation.outIDispatch
+                       Automation.outIUnknown --outIDispatch
 
 buildUniqueKeyField :: IOAdQueryDef a0
                     -> Prelude.IO (Automation.IDispatch ())
@@ -2159,7 +2221,8 @@ getNumberOfColumns =
                        []
                        Automation.outInt32
 
-getColumnValue :: Int.Int32
+getColumnValue :: (Automation.Variant a1)
+                     => Int.Int32
                -> IOAdResultSet a0
                -> Prelude.IO a1
 getColumnValue ordinal_column_number =
@@ -2211,7 +2274,8 @@ getParamLabel param_number =
                        [Automation.inInt32 param_number]
                        Automation.outString
 
-getParamChoiceList :: Int.Int32
+getParamChoiceList :: (Automation.Variant a1)
+                     => Int.Int32
                    -> IOAdResultSet a0
                    -> Prelude.IO a1
 getParamChoiceList param_number =
@@ -2219,7 +2283,8 @@ getParamChoiceList param_number =
                        [Automation.inInt32 param_number]
                        Automation.outVariant
 
-addParamValue :: Int.Int32
+addParamValue :: (Automation.Variant a1)
+                     => Int.Int32
               -> a1
               -> IOAdResultSet a0
               -> Prelude.IO ()
@@ -2317,13 +2382,27 @@ setParamComparisonOperator param_number param =
                      , Automation.inInt32 param
                      ]
 
-getAllColumnValues :: Prelude.Bool
+--getAllColumnValues :: (Automation.Variant a1)
+--                   => Prelude.Bool
+--                   -- Prelude.Bool
+--                   -> IOAdResultSet a0
+--                   -> Prelude.IO a1 -- (Automation.SafeArray a1) -- a1
+--                   -- -> Prelude.IO a1
+--getAllColumnValues bMoveNext =
+--  Automation.function1 "GetAllColumnValues"
+--                       [Automation.inBool bMoveNext]
+--                       Automation.outVariant -- outSafeArray -- outVariant
+
+getAllColumnValues :: --(Automation.Variant a1)
+                   -- => Prelude.Bool
+                   Prelude.Bool
                    -> IOAdResultSet a0
-                   -> Prelude.IO a1
+                   -> Prelude.IO (Automation.IDispatch ()) -- (Automation.SafeArray a1) -- a1
+                   -- -> Prelude.IO a1
 getAllColumnValues bMoveNext =
   Automation.function1 "GetAllColumnValues"
                        [Automation.inBool bMoveNext]
-                       Automation.outVariant
+                       Automation.outIDispatch -- outSafeArray -- outVariant
 
 getQueryLimit :: Int.Int32
               -> IOAdResultSet a0
@@ -2401,14 +2480,16 @@ setIsLegalForFilter prop =
   Automation.propertySet "IsLegalForFilter"
                          [Automation.inBool prop]
 
-getChoiceList :: IOAdQueryFieldDef a1
+getChoiceList :: (Automation.Variant a0)
+                     => IOAdQueryFieldDef a1
               -> Prelude.IO a0
 getChoiceList =
   Automation.propertyGet "choiceList"
                          []
                          Automation.outVariant
 
-setChoiceList :: a0
+setChoiceList :: (Automation.Variant a0)
+                     => a0
               -> IOAdQueryFieldDef a1
               -> Prelude.IO ()
 setChoiceList prop =
@@ -2681,14 +2762,16 @@ addItem item =
   Automation.method0 "AddItem"
                      [Automation.inString item]
 
-sort :: a1
+sort :: (Automation.Variant a1)
+                     => a1
      -> IOAdHookChoices a0
      -> Prelude.IO ()
 sort sortAscending =
   Automation.method0 "Sort"
                      [Automation.inVariant sortAscending]
 
-addItems :: a1
+addItems :: (Automation.Variant a1)
+                     => a1
          -> IOAdHookChoices a0
          -> Prelude.IO ()
 addItems items =
@@ -2723,21 +2806,24 @@ getName0 =
                        []
                        Automation.outString
 
-getFieldDefNames :: IOAdEntityDef a0
+getFieldDefNames :: (Automation.Variant a1)
+                     => IOAdEntityDef a0
                  -> Prelude.IO a1
 getFieldDefNames =
   Automation.function1 "GetFieldDefNames"
                        []
                        Automation.outVariant
 
-getActionDefNames :: IOAdEntityDef a0
+getActionDefNames :: (Automation.Variant a1)
+                     => IOAdEntityDef a0
                   -> Prelude.IO a1
 getActionDefNames =
   Automation.function1 "GetActionDefNames"
                        []
                        Automation.outVariant
 
-getStateDefNames :: IOAdEntityDef a0
+getStateDefNames :: (Automation.Variant a1)
+                     => IOAdEntityDef a0
                  -> Prelude.IO a1
 getStateDefNames =
   Automation.function1 "GetStateDefNames"
@@ -2807,7 +2893,8 @@ isSystemOwnedFieldDefName field_name =
                        [Automation.inString field_name]
                        Automation.outBool
 
-getLocalFieldPathNames :: Prelude.Bool
+getLocalFieldPathNames :: (Automation.Variant a1)
+                     => Prelude.Bool
                        -> IOAdEntityDef a0
                        -> Prelude.IO a1
 getLocalFieldPathNames visible_only =
@@ -2823,7 +2910,8 @@ getFieldReferenceEntityDef fieldname =
                        [Automation.inString fieldname]
                        Automation.outIDispatch
 
-doesTransitionExist :: Prelude.String
+doesTransitionExist :: (Automation.Variant a1)
+                     => Prelude.String
                     -> Prelude.String
                     -> IOAdEntityDef a0
                     -> Prelude.IO a1
@@ -2834,7 +2922,8 @@ doesTransitionExist sourceState destState =
                        ]
                        Automation.outVariant
 
-getHookDefNames :: IOAdEntityDef a0
+getHookDefNames :: (Automation.Variant a1)
+                     => IOAdEntityDef a0
                 -> Prelude.IO a1
 getHookDefNames =
   Automation.function1 "GetHookDefNames"
@@ -2957,7 +3046,8 @@ isBuiltInSystemOwned =
                        []
                        Automation.outBool
 
-getDisplayNameFields :: IOAdEntityDef a0
+getDisplayNameFields :: (Automation.Variant a1)
+                     => IOAdEntityDef a0
                      -> Prelude.IO a1
 getDisplayNameFields =
   Automation.function1 "GetDisplayNameFields"
@@ -3179,7 +3269,8 @@ getValue =
                        []
                        Automation.outString
 
-getValueAsList :: IOAdFieldInfo a0
+getValueAsList :: (Automation.Variant a1)
+                     => IOAdFieldInfo a0
                -> Prelude.IO a1
 getValueAsList =
   Automation.function1 "GetValueAsList"
@@ -3307,14 +3398,16 @@ setHistories prop =
   Automation.propertySet "Histories"
                          [Automation.inIDispatch prop]
 
-getDisplayNameHeader :: IOAdHistoryField a1
+getDisplayNameHeader :: (Automation.Variant a0)
+                     => IOAdHistoryField a1
                      -> Prelude.IO a0
 getDisplayNameHeader =
   Automation.propertyGet "DisplayNameHeader"
                          []
                          Automation.outVariant
 
-setDisplayNameHeader :: a0
+setDisplayNameHeader :: (Automation.Variant a0)
+                     => a0
                      -> IOAdHistoryField a1
                      -> Prelude.IO ()
 setDisplayNameHeader prop =
@@ -3534,14 +3627,16 @@ setAttachments prop =
   Automation.propertySet "Attachments"
                          [Automation.inIDispatch prop]
 
-getDisplayNameHeader0 :: IOAdAttachmentField a1
+getDisplayNameHeader0 :: (Automation.Variant a0)
+                      => IOAdAttachmentField a1
                       -> Prelude.IO a0
 getDisplayNameHeader0 =
   Automation.propertyGet "DisplayNameHeader"
                          []
                          Automation.outVariant
 
-setDisplayNameHeader0 :: a0
+setDisplayNameHeader0 :: (Automation.Variant a0)
+                      => a0
                       -> IOAdAttachmentField a1
                       -> Prelude.IO ()
 setDisplayNameHeader0 prop =
@@ -3622,7 +3717,8 @@ add filename description =
                        ]
                        Automation.outBool
 
-delete :: a1
+delete :: (Automation.Variant a1)
+                      => a1
        -> IOAdAttachments a0
        -> Prelude.IO Prelude.Bool
 delete subscript =
@@ -3745,28 +3841,32 @@ iidIOAdFieldFilter :: Com.IID (IOAdFieldFilter ())
 iidIOAdFieldFilter =
   Com.mkIID "{24A57401-3F6C-11D1-B2C0-00A0C9851B52}"
 
-getChoiceList0 :: IOAdFieldFilter a1
+getChoiceList0 :: (Automation.Variant a0)
+                      => IOAdFieldFilter a1
                -> Prelude.IO a0
 getChoiceList0 =
   Automation.propertyGet "choiceList"
                          []
                          Automation.outVariant
 
-setChoiceList0 :: a0
+setChoiceList0 :: (Automation.Variant a0)
+                      => a0
                -> IOAdFieldFilter a1
                -> Prelude.IO ()
 setChoiceList0 prop =
   Automation.propertySet "choiceList"
                          [Automation.inVariant prop]
 
-getLegalCompOps :: IOAdFieldFilter a1
+getLegalCompOps :: (Automation.Variant a0)
+                      => IOAdFieldFilter a1
                 -> Prelude.IO a0
 getLegalCompOps =
   Automation.propertyGet "LegalCompOps"
                          []
                          Automation.outVariant
 
-setLegalCompOps :: a0
+setLegalCompOps :: (Automation.Variant a0)
+                      => a0
                 -> IOAdFieldFilter a1
                 -> Prelude.IO ()
 setLegalCompOps prop =
@@ -3815,14 +3915,16 @@ setStringExpression prop =
   Automation.propertySet "StringExpression"
                          [Automation.inString prop]
 
-getValues :: IOAdFieldFilter a1
+getValues :: (Automation.Variant a0)
+                      => IOAdFieldFilter a1
           -> Prelude.IO a0
 getValues =
   Automation.propertyGet "values"
                          []
                          Automation.outVariant
 
-setValues :: a0
+setValues :: (Automation.Variant a0)
+                      => a0
           -> IOAdFieldFilter a1
           -> Prelude.IO ()
 setValues prop =
@@ -3865,7 +3967,7 @@ isLegalCompOp compOs =
                        [Automation.inInt32 compOs]
                        Automation.outBool
 
-isLegalValues :: (Automation.Variant a2)
+isLegalValues :: (Automation.Variant a2, Automation.Variant a1)
               => a1
               -> a2
               -> IOAdFieldFilter a0
@@ -3926,7 +4028,7 @@ setCount3 prop =
   Automation.propertySet "Count"
                          [Automation.inInt32 prop]
 
-add0 :: (Automation.Variant a2)
+add0 :: (Automation.Variant a2, Automation.Variant a1)
      => Prelude.String
      -> Int.Int32
      -> a1
@@ -3942,7 +4044,8 @@ add0 fieldname compOp values isUnique =
                        ]
                        Automation.outIDispatch
 
-remove :: a1
+remove :: (Automation.Variant a1)
+                      => a1
        -> IOAdFieldFilters a0
        -> Prelude.IO Prelude.Bool
 remove subscript =
@@ -4066,7 +4169,8 @@ getChild n =
                        [Automation.inInt16 n]
                        Automation.outIDispatch
 
-deleteChild :: a1
+deleteChild :: (Automation.Variant a1)
+                      => a1
             -> IOAdFilterNode a0
             -> Prelude.IO ()
 deleteChild index =
@@ -4122,7 +4226,8 @@ setCount4 prop =
   Automation.propertySet "Count"
                          [Automation.inInt32 prop]
 
-add1 :: a1
+add1 :: (Automation.Variant a1)
+                      => a1
      -> IOAdQueryFieldDefs a0
      -> Prelude.IO (Automation.IDispatch ())
 add1 item4 =
@@ -4137,7 +4242,8 @@ addUniqueKey =
                        []
                        Automation.outIDispatch
 
-remove0 :: a1
+remove0 :: (Automation.Variant a1)
+                      => a1
         -> IOAdQueryFieldDefs a0
         -> Prelude.IO Prelude.Bool
 remove0 subscript =
@@ -4219,7 +4325,8 @@ load0 filename =
                        [Automation.inString filename]
                        Automation.outIDispatch
 
-remove1 :: a1
+remove1 :: (Automation.Variant a1)
+                      => a1
         -> IOAdQueryDefs a0
         -> Prelude.IO Prelude.Bool
 remove1 subscript =
@@ -4259,13 +4366,15 @@ iidIOAdQueryFilterNode =
 
 buildFilterOperator0 :: Int.Int32
                      -> IOAdQueryFilterNode a0
-                     -> Prelude.IO (Automation.IDispatch ())
+                     -- -> Prelude.IO (Automation.IDispatch ())
+                     -> Prelude.IO (IOAdQueryFilterNode ())
 buildFilterOperator0 bool_op =
   Automation.function1 "BuildFilterOperator"
                        [Automation.inInt32 bool_op]
-                       Automation.outIDispatch
+                       Automation.outIUnknown -- outIDispatch
 
-buildFilter :: Prelude.String
+buildFilter :: (Automation.Variant a1)
+                      => Prelude.String
             -> Int.Int32
             -> a1
             -> IOAdQueryFilterNode a0
@@ -4319,7 +4428,8 @@ setSession sessionPtr =
                        [Automation.inIDispatch sessionPtr]
                        Automation.outBool
 
-getQueryList :: Int.Int16
+getQueryList :: (Automation.Variant a1)
+                      => Int.Int16
              -> IWkspcMgr a0
              -> Prelude.IO a1
 getQueryList querySelector =
@@ -4342,7 +4452,8 @@ setUserName username =
   Automation.method0 "SetUserName"
                      [Automation.inString username]
 
-getChartList :: Int.Int16
+getChartList :: (Automation.Variant a1)
+                      => Int.Int16
              -> IWkspcMgr a0
              -> Prelude.IO a1
 getChartList chartSelector =
@@ -4365,7 +4476,8 @@ getChartMgr =
                        []
                        Automation.outIDispatch
 
-getReportList :: Int.Int16
+getReportList :: (Automation.Variant a1)
+                      => Int.Int16
               -> IWkspcMgr a0
               -> Prelude.IO a1
 getReportList reportSelector =
@@ -4381,7 +4493,8 @@ getReportMgr name =
                        [Automation.inString name]
                        Automation.outIDispatch
 
-normalizeDateTimeString :: Prelude.String
+normalizeDateTimeString :: (Automation.Variant a1)
+                      => Prelude.String
                         -> IWkspcMgr a0
                         -> Prelude.IO a1
 normalizeDateTimeString dTStr =
@@ -4420,14 +4533,16 @@ saveQueryDef qdefName qdefPath pOaqdef overwrite =
                      , Automation.inBool overwrite
                      ]
 
-getAllQueriesList :: IWkspcMgr a0
+getAllQueriesList :: (Automation.Variant a1)
+                      => IWkspcMgr a0
                   -> Prelude.IO a1
 getAllQueriesList =
   Automation.function1 "GetAllQueriesList"
                        []
                        Automation.outVariant
 
-getUserPreferenceBucket :: Int.Int32
+getUserPreferenceBucket :: (Automation.Variant a1)
+                      => Int.Int32
                         -> Int.Int32
                         -> IWkspcMgr a0
                         -> Prelude.IO a1
@@ -4438,7 +4553,8 @@ getUserPreferenceBucket key subKey =
                        ]
                        Automation.outVariant
 
-setUserPreferenceBucket :: Int.Int32
+setUserPreferenceBucket :: (Automation.Variant a1)
+                      => Int.Int32
                         -> Int.Int32
                         -> Prelude.String
                         -> IWkspcMgr a0
@@ -4470,7 +4586,8 @@ renameQueryDef oldName newName =
                        ]
                        Automation.outBool
 
-getStartUpQueries :: IWkspcMgr a0
+getStartUpQueries :: (Automation.Variant a1)
+                      => IWkspcMgr a0
                   -> Prelude.IO a1
 getStartUpQueries =
   Automation.function1 "GetStartUpQueries"
@@ -4499,14 +4616,16 @@ getStartUpQueryType queryPathName =
                        [Automation.inString queryPathName]
                        Automation.outInt16
 
-getReportFormatList :: IWkspcMgr a0
+getReportFormatList :: (Automation.Variant a1)
+                      => IWkspcMgr a0
                     -> Prelude.IO a1
 getReportFormatList =
   Automation.function1 "GetReportFormatList"
                        []
                        Automation.outVariant
 
-getReportFormatQueryList :: IWkspcMgr a0
+getReportFormatQueryList :: (Automation.Variant a1)
+                      => IWkspcMgr a0
                          -> Prelude.IO a1
 getReportFormatQueryList =
   Automation.function1 "GetReportFormatQueryList"
@@ -4593,7 +4712,8 @@ siteHasMastership0 bucketPath =
                        [Automation.inString bucketPath]
                        Automation.outBool
 
-getSiteExtendedNames0 :: Prelude.String
+getSiteExtendedNames0 :: (Automation.Variant a1)
+                      => Prelude.String
                       -> IWkspcMgr a0
                       -> Prelude.IO a1
 getSiteExtendedNames0 bucketPath =
@@ -4612,21 +4732,24 @@ renameWorkspaceItem oldPath newName =
                        ]
                        Automation.outBool
 
-getPublicFolderName :: IWkspcMgr a0
+getPublicFolderName :: (Automation.Variant a1)
+                      => IWkspcMgr a0
                     -> Prelude.IO a1
 getPublicFolderName =
   Automation.function1 "GetPublicFolderName"
                        []
                        Automation.outVariant
 
-getPersonalFolderName :: IWkspcMgr a0
+getPersonalFolderName :: (Automation.Variant a1)
+                      => IWkspcMgr a0
                       -> Prelude.IO a1
 getPersonalFolderName =
   Automation.function1 "GetPersonalFolderName"
                        []
                        Automation.outVariant
 
-getWorkspaceItemDbIdList :: Int.Int32
+getWorkspaceItemDbIdList :: (Automation.Variant a1)
+                      => Int.Int32
                          -> Int.Int32
                          -> Int.Int32
                          -> Prelude.String
@@ -4649,7 +4772,8 @@ siteExtendedNameRequired dbid =
                        [Automation.inInt32 dbid]
                        Automation.outBool
 
-getWorkspaceItemName :: Int.Int32
+getWorkspaceItemName :: (Automation.Variant a1)
+                      => Int.Int32
                      -> Int.Int32
                      -> IWkspcMgr a0
                      -> Prelude.IO a1
@@ -4660,7 +4784,8 @@ getWorkspaceItemName dbid extended_option =
                        ]
                        Automation.outVariant
 
-getWorkspaceItemSiteExtendedName :: Int.Int32
+getWorkspaceItemSiteExtendedName :: (Automation.Variant a1)
+                      => Int.Int32
                                  -> IWkspcMgr a0
                                  -> Prelude.IO a1
 getWorkspaceItemSiteExtendedName dbid =
@@ -4668,7 +4793,8 @@ getWorkspaceItemSiteExtendedName dbid =
                        [Automation.inInt32 dbid]
                        Automation.outVariant
 
-getWorkspaceItemPathName :: Int.Int32
+getWorkspaceItemPathName :: (Automation.Variant a1)
+                      => Int.Int32
                          -> Int.Int32
                          -> IWkspcMgr a0
                          -> Prelude.IO a1
@@ -4776,7 +4902,8 @@ getReportMgrByReportDbId report_dbid =
                        [Automation.inInt32 report_dbid]
                        Automation.outIDispatch
 
-getReportFormatQueryDbIdList :: Prelude.String
+getReportFormatQueryDbIdList :: (Automation.Variant a1)
+                      => Prelude.String
                              -> IWkspcMgr a0
                              -> Prelude.IO a1
 getReportFormatQueryDbIdList entdef_name =
@@ -4830,7 +4957,8 @@ createWorkspaceFolder user_id folder_type new_name parent_dbid =
                        ]
                        Automation.outInt32
 
-getQueryDbIdList :: Int.Int16
+getQueryDbIdList :: (Automation.Variant a1)
+                      => Int.Int16
                  -> IWkspcMgr a0
                  -> Prelude.IO a1
 getQueryDbIdList querySelector =
@@ -4838,7 +4966,8 @@ getQueryDbIdList querySelector =
                        [Automation.inInt16 querySelector]
                        Automation.outVariant
 
-getChartDbIdList :: Int.Int16
+getChartDbIdList :: (Automation.Variant a1)
+                      => Int.Int16
                  -> IWkspcMgr a0
                  -> Prelude.IO a1
 getChartDbIdList querySelector =
@@ -4846,7 +4975,8 @@ getChartDbIdList querySelector =
                        [Automation.inInt16 querySelector]
                        Automation.outVariant
 
-getReportDbIdList :: Int.Int16
+getReportDbIdList :: (Automation.Variant a1)
+                      => Int.Int16
                   -> IWkspcMgr a0
                   -> Prelude.IO a1
 getReportDbIdList reportSelector =
@@ -4854,7 +4984,8 @@ getReportDbIdList reportSelector =
                        [Automation.inInt16 reportSelector]
                        Automation.outVariant
 
-getReportFormatDbIdList :: IWkspcMgr a0
+getReportFormatDbIdList :: (Automation.Variant a1)
+                      => IWkspcMgr a0
                         -> Prelude.IO a1
 getReportFormatDbIdList =
   Automation.function1 "GetReportFormatDbIdList"
@@ -4877,14 +5008,16 @@ getReportMgr8 name =
                        [Automation.inString name]
                        Automation.outIDispatch
 
-getPersonalWebFolderName :: IWkspcMgr a0
+getPersonalWebFolderName :: (Automation.Variant a1)
+                      => IWkspcMgr a0
                          -> Prelude.IO a1
 getPersonalWebFolderName =
   Automation.function1 "GetPersonalWebFolderName"
                        []
                        Automation.outVariant
 
-getUneditedQueries :: Int.Int16
+getUneditedQueries :: (Automation.Variant a1)
+                      => Int.Int16
                    -> IWkspcMgr a0
                    -> Prelude.IO a1
 getUneditedQueries querySelector =
@@ -4892,7 +5025,8 @@ getUneditedQueries querySelector =
                        [Automation.inInt16 querySelector]
                        Automation.outVariant
 
-getWorkspaceItemMasterReplicaName :: Int.Int32
+getWorkspaceItemMasterReplicaName :: (Automation.Variant a1)
+                      => Int.Int32
                                   -> IWkspcMgr a0
                                   -> Prelude.IO a1
 getWorkspaceItemMasterReplicaName dbid =
@@ -5547,7 +5681,8 @@ siteHasMastership1 =
                        []
                        Automation.outBool
 
-upgradeInfo :: IOAdUser a0
+upgradeInfo :: (Automation.Variant a1)
+                      => IOAdUser a0
             -> Prelude.IO a1
 upgradeInfo =
   Automation.function1 "UpgradeInfo"
@@ -5942,28 +6077,32 @@ setIsMaster prop =
   Automation.propertySet "IsMaster"
                          [Automation.inBool prop]
 
-getConnectProtocols :: IOAdDatabase a1
+getConnectProtocols :: (Automation.Variant a0)
+                      => IOAdDatabase a1
                     -> Prelude.IO a0
 getConnectProtocols =
   Automation.propertyGet "ConnectProtocols"
                          []
                          Automation.outVariant
 
-setConnectProtocols :: a0
+setConnectProtocols :: (Automation.Variant a0)
+                      => a0
                     -> IOAdDatabase a1
                     -> Prelude.IO ()
 setConnectProtocols prop =
   Automation.propertySet "ConnectProtocols"
                          [Automation.inVariant prop]
 
-getConnectHosts :: IOAdDatabase a1
+getConnectHosts :: (Automation.Variant a0)
+                      => IOAdDatabase a1
                 -> Prelude.IO a0
 getConnectHosts =
   Automation.propertyGet "ConnectHosts"
                          []
                          Automation.outVariant
 
-setConnectHosts :: a0
+setConnectHosts :: (Automation.Variant a0)
+                      => a0
                 -> IOAdDatabase a1
                 -> Prelude.IO ()
 setConnectHosts prop =
@@ -6443,7 +6582,8 @@ dropSchemaRepoLocationFile filePath =
   Automation.method0 "DropSchemaRepoLocationFile"
                      [Automation.inString filePath]
 
-lookupSchemaRepoLocationFiles :: IAdminSession a0
+lookupSchemaRepoLocationFiles :: (Automation.Variant a1)
+                      => IAdminSession a0
                               -> Prelude.IO a1
 lookupSchemaRepoLocationFiles =
   Automation.function1 "LookupSchemaRepoLocationFiles"
@@ -6458,7 +6598,8 @@ registerSchemaRepoFromFile0 filePath =
                        [Automation.inString filePath]
                        Automation.outString
 
-getAttribute :: Automation.IDispatch a2
+getAttribute :: (Automation.Variant a1)
+                      => Automation.IDispatch a2
              -> Prelude.String
              -> IAdminSession a0
              -> Prelude.IO a1
@@ -6469,7 +6610,8 @@ getAttribute obj func =
                        ]
                        Automation.outVariant
 
-getAttribute1 :: Automation.IDispatch a2
+getAttribute1 :: (Automation.Variant a1)
+                      => Automation.IDispatch a2
               -> Prelude.String
               -> Prelude.String
               -> IAdminSession a0
@@ -6482,7 +6624,8 @@ getAttribute1 obj func field =
                        ]
                        Automation.outVariant
 
-getAttribute2 :: Automation.IDispatch a2
+getAttribute2 :: (Automation.Variant a1)
+                      => Automation.IDispatch a2
               -> Prelude.String
               -> Prelude.String
               -> Prelude.String
@@ -6497,7 +6640,8 @@ getAttribute2 obj func field arg =
                        ]
                        Automation.outVariant
 
-getAttribute3 :: Automation.IDispatch a2
+getAttribute3 :: (Automation.Variant a1)
+                      => Automation.IDispatch a2
               -> Prelude.String
               -> Prelude.String
               -> Prelude.String
@@ -7022,14 +7166,16 @@ setControlDispatch prop =
   Automation.propertySet "ControlDispatch"
                          [Automation.inIDispatch prop]
 
-getListSelection :: IOAdEventObject a1
+getListSelection :: (Automation.Variant a0)
+                      => IOAdEventObject a1
                  -> Prelude.IO a0
 getListSelection =
   Automation.propertyGet "ListSelection"
                          []
                          Automation.outVariant
 
-setListSelection :: a0
+setListSelection :: (Automation.Variant a0)
+                      => a0
                  -> IOAdEventObject a1
                  -> Prelude.IO ()
 setListSelection prop =
@@ -7140,14 +7286,16 @@ type IOAdItem a = Automation.IDispatch (IOAdItem_ a)
 iidIOAdItem :: Com.IID (IOAdItem ())
 iidIOAdItem = Com.mkIID "{B9F132E4-96A9-11D2-B40F-00A0C9851B52}"
 
-getValue1 :: IOAdItem a1
+getValue1 :: (Automation.Variant a0)
+                      => IOAdItem a1
           -> Prelude.IO a0
 getValue1 =
   Automation.propertyGet "value"
                          []
                          Automation.outVariant
 
-setValue0 :: a0
+setValue0 :: (Automation.Variant a0)
+                      => a0
           -> IOAdItem a1
           -> Prelude.IO ()
 setValue0 prop =
@@ -7259,7 +7407,8 @@ setCount12 prop =
   Automation.propertySet "Count"
                          [Automation.inInt32 prop]
 
-remove2 :: a1
+remove2 :: (Automation.Variant a1)
+                      => a1
         -> IOAdEntityDefs a0
         -> Prelude.IO Prelude.Bool
 remove2 subscript =
@@ -7325,7 +7474,8 @@ setCount13 prop =
   Automation.propertySet "Count"
                          [Automation.inInt32 prop]
 
-remove3 :: a1
+remove3 :: (Automation.Variant a1)
+                      => a1
         -> IOAdPackageRevs a0
         -> Prelude.IO Prelude.Bool
 remove3 subscript =
@@ -7717,7 +7867,8 @@ getSubfolders =
                        []
                        Automation.outIDispatch
 
-getChildNames :: Int.Int32
+getChildNames :: (Automation.Variant a1)
+                      => Int.Int32
               -> Prelude.Bool
               -> Int.Int32
               -> IOAdFolder a0
@@ -7730,7 +7881,8 @@ getChildNames item_type asFullPathname name_option =
                        ]
                        Automation.outVariant
 
-getChildDbIds :: Int.Int32
+getChildDbIds :: (Automation.Variant a1)
+                      => Int.Int32
               -> IOAdFolder a0
               -> Prelude.IO a1
 getChildDbIds itemType =
@@ -7840,7 +7992,8 @@ revertPermissions =
   Automation.method0 "RevertPermissions"
                      []
 
-getAllGroupPermissions :: Int.Int32
+getAllGroupPermissions :: (Automation.Variant a1)
+                      => Int.Int32
                        -> IOAdFolder a0
                        -> Prelude.IO a1
 getAllGroupPermissions kindAsName =
