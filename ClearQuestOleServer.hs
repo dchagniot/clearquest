@@ -166,11 +166,13 @@ testingThrowException exception_code =
 
 getEntityDef :: Prelude.String
              -> IOAdSession a0
-             -> Prelude.IO (Automation.IDispatch ())
+             -> Prelude.IO (IOAdEntityDef ())
+             -- -> Prelude.IO (Automation.IDispatch ())
 getEntityDef entity_def_name =
   Automation.function1 "GetEntityDef"
                        [Automation.inString entity_def_name]
-                       Automation.outIDispatch
+                       Automation.outIUnknown
+                       -- Automation.outIDispatch
 
 markEntityAsDuplicate :: Automation.IDispatch a1
                       -> Automation.IDispatch a2
