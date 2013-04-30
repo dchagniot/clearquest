@@ -3,8 +3,8 @@ module ClearQuestHelper where
 
 import ClearQuestOleServer
 import System.Win32.Com
-import System.Win32.Com.Automation as Auto
-import Control.Exception
+--import System.Win32.Com.Automation as Auto
+--import Control.Exception
 import Control.Monad (MonadPlus, mzero, mplus)
 import Data.Int
 
@@ -108,9 +108,9 @@ unfoldrM' f z = do
         x <- f z
         case x of
                 Nothing         -> return mzero
-                Just (x, z)     -> do
-                        xs <- unfoldrM' f z
-                        return (return x `mplus` xs)
+                Just (a, b)     -> do
+                        xs <- unfoldrM' f b
+                        return (return a `mplus` xs)
 
 
 {-- clearquest API constants
