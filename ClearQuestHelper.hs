@@ -8,6 +8,14 @@ import System.Win32.Com
 import Control.Monad (MonadPlus, mzero, mplus)
 import Data.Int
 
+-- | helper to build the entity fields
+-- | basically, the list of action are: setFieldValue str, addFieldValue str
+seqFieldVal :: [a -> IO String] -> a -> IO ()
+seqFieldVal [] _ = return ()
+seqFieldVal (x:xs) entity = do
+    putStrLn =<< (entity # x)
+    seqFieldVal xs entity
+
 -- | commit or revert the entity after validation
 comOrRev :: IOAdEntity a0 -> IO (Maybe (IOAdEntity a0))
 comOrRev entity = do
