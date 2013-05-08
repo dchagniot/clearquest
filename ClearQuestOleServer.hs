@@ -2760,9 +2760,9 @@ iidIOAdHookChoices =
 addItem :: Prelude.String
         -> IOAdHookChoices a0
         -> Prelude.IO ()
-addItem item =
+addItem itemToAdd =
   Automation.method0 "AddItem"
-                     [Automation.inString item]
+                     [Automation.inString itemToAdd]
 
 sort :: (Automation.Variant a1)
                      => a1
@@ -4232,9 +4232,9 @@ add1 :: (Automation.Variant a1)
                       => a1
      -> IOAdQueryFieldDefs a0
      -> Prelude.IO (Automation.IDispatch ())
-add1 item4 =
+add1 itemToAdd4 =
   Automation.function1 "Add"
-                       [Automation.inVariant item4]
+                       [Automation.inVariant itemToAdd4]
                        Automation.outIDispatch
 
 addUniqueKey :: IOAdQueryFieldDefs a0
