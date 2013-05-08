@@ -17,17 +17,14 @@ seqFieldVal (x:xs) entity = do
     seqFieldVal xs entity
 
 -- | commit or revert the entity after validation
-comOrRev :: IOAdEntity a0 -> IO (Maybe (IOAdEntity a0))
+comOrRev :: IOAdEntity a0 -> IO String
 comOrRev entity = do
     resString <- entity # validate
     case resString of
-         "" -> do
-            _ <- entity # commit
-            return (Just entity)
+         "" -> entity # commit
          str -> do
-            putStrLn str
             entity # revert
-            return Nothing
+            return str
 
 -- | execute the query and return the results
 exeQuery :: String -> (IOAdQueryDef () -> IO a) -> IOAdSession a0 -> IO [[String]]
